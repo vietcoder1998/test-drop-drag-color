@@ -16,6 +16,7 @@ function App() {
   ])
 
   const [dragPosition, setDragPosition] = useState<[number, number]>([0, 0])
+  const [dropPosition, setDropPosition] = useState<[number, number]>([0, 0])
 
   const onDragStart = useCallback(
     (position: [number, number]) => {
@@ -23,31 +24,33 @@ function App() {
         setDragPosition(position)
       }
     },
-    [setDragPosition, data],
+    [setDragPosition],
   )
 
   const onDragEnter = useCallback(
     (position: [number, number]) => {
-      console.log(position, dragPosition)
-      const nData = [...data]
-      const color1 = nData[dragPosition[1]][dragPosition[0]]
-      const color2 = nData[position[1]][position[0]]
-      
-      // swap color
-      nData[dragPosition[1]][dragPosition[0]] = color2
-      nData[position[1]][position[0]] = color1
-
-      setData(nData)
+      if (position !== dragPosition) {
+        setDropPosition(position)
+      }
     },
-    [setData, data],
+    [setDragPosition],
+  
   )
 
   const onDragEnd = useCallback(
-    () => {
-      console.log('change')
-        
+   (e: any) => {
+      console.log('drag over',dropPosition, dragPosition)
+      const nData = [...data]
+      const color1 = nData[dragPosition[1]][dragPosition[0]]
+      const color2 = nData[dropPosition[1]][dropPosition[0]]
+      
+      // swap color
+      nData[dragPosition[1]][dragPosition[0]] = color2
+      nData[dropPosition[1]][dropPosition[0]] = color1
+
+      setData(nData)
     },
-    [setData, data],
+    [setData, data, dragPosition, dropPosition],
   )
 
   return (
@@ -57,9 +60,9 @@ function App() {
           return <div style={{display: 'flex'}}>
             {
               item.map((color: string, x: number ) => (<Draggable key={`${x}${y}`} 
-                onDragEnd={onDragEnd} 
-                onDragStart={onDragStart} 
                 onDragEnter={onDragEnter} 
+                onDragStart={onDragStart} 
+                onDragEnd ={onDragEnd}
                 color={color} 
                 position={[x, y]}/>))
             }
