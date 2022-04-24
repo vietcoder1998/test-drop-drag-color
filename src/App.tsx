@@ -57,7 +57,7 @@ function App() {
     <div className="App">
       {data?.map(
         (item: string[], y: number) => {
-          return <div style={{display: 'flex'}}>
+          return <div key={y} style={{display: 'flex'}}>
             {
               item.map((color: string, x: number ) => (<Draggable key={`${x}${y}`} 
                 onDragEnter={onDragEnter} 
